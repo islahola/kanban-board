@@ -2,6 +2,7 @@ import React, { useContext }from 'react'
 import { DataContext } from "../context/store"
 import delIcon from "../assets/delete.png"
 import '../sass/Card.scss'
+import { Draggable } from 'react-beautiful-dnd'
 
 const Card = ({item,id,index}) => {
     const { cardDelete,editCard } = useContext(DataContext)
@@ -17,24 +18,33 @@ const Card = ({item,id,index}) => {
         cardDelete(id,item.id)
     }
     return (
-        <div className="card-list">
-           { edit ?(
-                <form onSubmit={closeEdit}>
-                    <input
-                        autoFocus
-                        value={text}
-                        onBlur={closeEdit}
-                        onChange={handleChange}
-                        type="text"
-                    />
-                </form>
-           ) : (
-            <div className="card-list__text">
-                <p onClick={isEdit}>{item.title}</p>
-                <img src={delIcon} onClick={del}/>
+        <Draggable draggableId={item.id} index = {index}>
+            {(provided)=>(
+            <div 
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            className="card-list"
+            >
+            { edit ?(
+                    <form onSubmit={closeEdit}>
+                        <input
+                            autoFocus
+                            value={text}
+                            onBlur={closeEdit}
+                            onChange={handleChange}
+                            type="text"
+                        />
+                    </form>
+            ) : (
+                <div className="card-list__text">
+                    <p onClick={isEdit}>{item.title}</p>
+                    <img src={delIcon} onClick={del}/>
+                </div>
+                )}
             </div>
             )}
-        </div>
+        </Draggable>
     )
 }
 
